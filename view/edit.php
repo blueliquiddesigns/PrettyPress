@@ -34,7 +34,7 @@ if ( ! defined('ABSPATH') ) { exit; }
 //This is the edit post / page hooking page.
 //Everything on this page will appear on the admin back end.
 
-global $post, $prettypress_config, $wp_version;
+global $post, $prettypress_config, $wp_version, $editor_styles;
 ?>
 <div id="prettypress_external"></div>
 <div id="prettypress" class="prettypress">
@@ -89,12 +89,33 @@ global $post, $prettypress_config, $wp_version;
 				if ( $prettypress_config['markdown_enabled'] == "disabled" ) {
 					?> prettypress_tab_active<?php } ?>">
 				<?php
+				
+					/* Load editor styles */
+					$editor_styles = get_editor_stylesheets();
+					if ( ! empty( $editor_styles ) ) {
+						foreach ( $editor_styles as $style ) {
+							$mce_css[] = $style;
+						}
+					}
+
+					/**
+					 * Filter the comma-delimited list of stylesheets to load in TinyMCE.
+					 *
+					 * @since 2.1.0
+					 *
+					 * @param array $stylesheets Comma-delimited list of stylesheets.
+					 */
+					$mce_css = trim( apply_filters( 'mce_css', implode( ',', $mce_css ) ), ' ,' );
+
 					wp_editor('', 'prettypress_tinymce',
 						array(
 							'textarea_name' => 'prettypress_tinymce_textarea',
 							'quicktags' => false,
-							'wp_autoresize_on' => false,
-							'resize' => true
+							'resize' => true,
+							'tinymce' => array( 
+								'wp_autoresize_on' => false,
+							    'content_css' => $mce_css,
+							) 							
 						)
 					);
 				?>

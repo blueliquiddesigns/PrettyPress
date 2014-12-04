@@ -218,21 +218,6 @@ function prettypress_post_isnew() {
 
 }
 
-//Stop TinyMCE resizing.
-//It screws with PrettyPress resizing.
-//Sorry kids.
-//(Thanks azaozz, https://core.trac.wordpress.org/ticket/29360)
-add_action( 'admin_init', 'my_deregister_editor_expand' );
-function my_deregister_editor_expand() {
-	wp_deregister_script('editor-expand');
-}
-
-add_filter( 'tiny_mce_before_init', 'my_unset_autoresize_on' );
-function my_unset_autoresize_on( $init ) {
-	unset( $init['wp_autoresize_on'] );
-	return $init;
-}
-
 function prettypress_do_pro() {
 
 	global $prettypress_config;
